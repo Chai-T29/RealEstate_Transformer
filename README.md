@@ -21,6 +21,11 @@ This project delivers a comprehensive solution for predicting and visualizing re
 - Simple, modular training pipeline  
 - Fully compatible with Google Colab and local Python (GPU recommended)
 
+Here's an example of how the model deals with sparsity:
+![results](https://github.com/user-attachments/assets/1cf11180-c19c-4abb-9c77-7323a46868be)
+
+<br>
+
 ---
 
 ## Installation
