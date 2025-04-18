@@ -3,8 +3,6 @@
 🔗 **Project Google Drive**:  
 [Access the Drive Folder](https://drive.google.com/drive/folders/1wBVWORZl7w8UccK1tqoNAn0_LC3hptcO?usp=drive_link)
 
-<br>
-
 ---
 
 ## Description
