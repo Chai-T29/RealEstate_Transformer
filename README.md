@@ -5,7 +5,7 @@
 
 ---
 
-## 📌 Description
+## Description
 
 Welcome to My Group's Housing & Rental Forecasting Tool (For GA Tech CSE 6242).
 
@@ -15,7 +15,7 @@ This project delivers a comprehensive solution for predicting and visualizing re
 1. **Neural Network Model** – Predicts current and future housing/rental values using a Transformer-based architecture.  
 2. **Interactive Visualization** – Dual dashboards for historical and forecasted data across ZIP codes.
 
-### ⭐ Key Features
+### Key Features
 - Forecasts up to 12 months into the future  
 - Robust performance even with sparse data  
 - Simple, modular training pipeline  
@@ -23,7 +23,7 @@ This project delivers a comprehensive solution for predicting and visualizing re
 
 ---
 
-## ⚙️ Installation
+## Installation
 
 1. Clone or download the repository.  
 2. Open `redfin_model_pipeline.ipynb` — the primary notebook for running the project.  
@@ -32,7 +32,7 @@ This project delivers a comprehensive solution for predicting and visualizing re
 
 ---
 
-## ▶️ Execution Steps
+## Execution Steps
 
 The notebook guides you through six main steps:
 
