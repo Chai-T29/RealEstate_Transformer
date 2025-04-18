@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" 
+        type="image/png" 
+        href="{{ url_for('static', filename='images/favicon.png') }}">
+  <title>Welcome Page</title>
+  <style>
+    /* Basic reset */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f06, #4a90e2);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      padding: 2em;
+    }
+
+    h1 {
+      font-size: 3em;
+      margin-bottom: 0.5em;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    /* Distinct “Meet Our Team” button */
+    .team-button {
+      background: #fff;
+      color: #4a90e2;
+      border: none;
+      padding: 0.75em 1.5em;
+      font-size: 1.2em;
+      font-weight: bold;
+      border-radius: 30px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
+      margin-bottom: 2em;
+    }
+    .team-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 14px rgba(0,0,0,0.25);
+    }
+
+    .button-container {
+      display: flex;
+      gap: 2em;
+      margin-top: 1em;
+    }
+
+    .fancy-button {
+      width: 200px;
+      height: 150px;
+      background: none;
+      border: none;
+      padding: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+    .fancy-button:hover {
+      transform: scale(1.05);
+    }
+    .fancy-button img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      display: block;
+    }
+
+    /* Modal overlay */
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1em;
+      z-index: 1000;
+    }
+    .modal.active {
+      display: flex;
+    }
+
+    /* Modal content, slightly narrower */
+    .modal-content {
+      background: #fff;
+      color: #333;
+      border-radius: 10px;
+      max-width: 1200px;
+      width: 90%;
+      padding: 1.5em;
+      position: relative;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1em;
+    }
+    .modal-header h2 {
+      margin: 0;
+      font-size: 1.8em;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.5em;
+      cursor: pointer;
+    }
+
+    /* Six-column grid with narrower cards */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(150px, 1fr));
+      gap: 1em;
+    }
+
+    .team-card {
+      background: #f9f9f9;
+      border-radius: 8px;
+      overflow: hidden;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: transform 0.2s;
+    }
+    .team-card:hover {
+      transform: translateY(-5px);
+    }
+    .team-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+    }
+    .team-card .info {
+      padding: 0.5em;
+    }
+    .team-card .info h3 {
+      margin-bottom: 0.2em;
+      font-size: 1em;
+      color: #333;
+    }
+    .team-card .info p {
+      font-size: 0.8em;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to DVA Flask App (Group 130)</h1>
+
+  <!-- Distinct Team Button -->
+  <button class="team-button" id="open-team-modal">
+    👥 Meet Our Team
+  </button>
+
+  <div class="button-container">
+    <button class="fancy-button" onclick="window.location.href='/map'">
+      <img src="/static/images/map_icon.jpg" alt="Map Icon" />
+    </button>
+    <button class="fancy-button" onclick="window.location.href='/graph'">
+      <img src="/static/images/graph_icon.jpg" alt="Graph Icon" />
+    </button>
+  </div>
+
+  <!-- Team Modal -->
+  <div class="modal" id="team-modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Meet Our Team</h2>
+        <button class="close-btn" id="close-team-modal">&times;</button>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <img src="/static/images/member1.jpg" alt="Chaitanya Tatipigari">
+          <div class="info">
+            <h3>Chaitanya Tatipigari</h3>
+            <p>Data Scientist</p>
+          </div>
+        </div>
+        <div class="team-card">
+          <img src="/static/images/member2.jpg" alt="Caroline Mejia">
+          <div class="info">
+            <h3>Caroline Mejia</h3>
+            <p>Data Scientist</p>
+          </div>
+        </div>
+        <div class="team-card">
+          <img src="/static/images/member3.jpg" alt="Reza Massah">
+          <div class="info">
+            <h3>Reza Massah</h3>
+            <p>App Developer</p>
+          </div>
+        </div>
+        <div class="team-card">
+          <img src="/static/images/member4.jpg" alt="Monica London">
+          <div class="info">
+            <h3>Monica London</h3>
+            <p>Data Scientist</p>
+          </div>
+        </div>
+        <div class="team-card">
+          <img src="/static/images/member5.jpg" alt="Kenneth Day">
+          <div class="info">
+            <h3>Kenneth Day</h3>
+            <p>App Developer</p>
+          </div>
+        </div>
+        <div class="team-card">
+          <img src="/static/images/member6.jpg" alt="Maria Contreras">
+          <div class="info">
+            <h3>Maria Contreras</h3>
+            <p>Data Scientist</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const openBtn  = document.getElementById('open-team-modal');
+    const closeBtn = document.getElementById('close-team-modal');
+    const modal    = document.getElementById('team-modal');
+
+    openBtn.addEventListener('click', () => modal.classList.add('active'));
+    closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+    modal.addEventListener('click', e => {
+      if (e.target === modal) modal.classList.remove('active');
+    });
+  </script>
+</body>
+</html>

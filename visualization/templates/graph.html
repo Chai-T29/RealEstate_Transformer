@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    To force the x‑axis to run January → December, in your plotting code do:
+
+      import datetime, matplotlib.dates as mdates
+
+      year  = df.index.year.min()
+      start = datetime.datetime(year,  1,  1)
+      end   = datetime.datetime(year, 12, 31)
+
+      ax.set_xlim(start, end)
+      ax.xaxis.set_major_locator(
+        mdates.MonthLocator(bymonth=range(1,13))
+      )
+      ax.xaxis.set_major_formatter(
+        mdates.DateFormatter('%b')
+      )
+  -->
+  <meta charset="utf-8">
+  <link rel="icon" 
+        type="image/png" 
+        href="{{ url_for('static', filename='images/favicon.png') }}">
+  <title>Construction price prediction</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      position: relative;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      color: #333;
+      padding: 20px;
+    }
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: url("{{ url_for('static', filename='images/img1.png') }}")
+                  no-repeat center center;
+      background-size: cover;
+      filter: blur(4px) brightness(0.8);
+      z-index: -2;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      z-index: -1;
+    }
+    .container {
+      background: rgba(255,255,255,0.9);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 100%; max-width: 600px;
+      text-align: center;
+      position: relative;
+      z-index: 0;
+    }
+    h1 { font-size: 2rem; margin-bottom: 24px; font-weight: 600; }
+    .error { color: #c00; margin-bottom: 16px; font-weight: 500; }
+    form, .result { margin-top: 20px; }
+    label {
+      display: block; margin-bottom: 8px;
+      font-weight: 500; color: #555; text-align: left;
+    }
+    select, textarea {
+      width: 100%; padding: 12px; margin-bottom: 20px;
+      border: 1px solid #ccc; border-radius: 8px;
+      font-size: 1rem; outline: none;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+    select:focus, textarea:focus {
+      border-color: #5563DE;
+      box-shadow: 0 0 0 3px rgba(85,99,222,0.2);
+    }
+    button {
+      padding: 12px 24px; font-size: 1rem; border: none;
+      border-radius: 8px; background: #5563DE; color: white;
+      cursor: pointer; transition: background 0.3s; margin: 4px;
+    }
+    button:hover { background: #3e4bb5; }
+    img {
+      max-width: 100%; height: auto; margin-top: 20px;
+      border-radius: 8px;
+    }
+    .nav-buttons { margin-top: 16px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>2025 Forecasts</h1>
+
+    {% if not plot_data %}
+      {% if error %}
+        <div class="error">{{ error }}</div>
+      {% endif %}
+      <form method="post">
+        <label for="data_src">Select Data Source:</label>
+        <select id="data_src" name="data_src" required>
+          <option value="All_Residential"
+            {% if current_src == 'All_Residential' %}selected{% endif %}>
+            All Residential
+          </option>
+          <option value="Condo"
+            {% if current_src == 'Condo' %}selected{% endif %}>
+            Condo/Co-op
+          </option>
+          <option value="Multi_Family"
+            {% if current_src == 'Multi_Family' %}selected{% endif %}>
+            Multi-Family (2-4 Unit)
+          </option>
+          <option value="Single_Family"
+            {% if current_src == 'Single_Family' %}selected{% endif %}>
+            Single Family Residential
+          </option>
+          <option value="Townhouse"
+            {% if current_src == 'Townhouse' %}selected{% endif %}>
+            Townhouse
+          </option>
+          <option value="Rental_pred"
+          {% if current_src == 'Rental_pred' %}selected{% endif %}>
+          Rental
+        </option>
+        </select>
+
+        <label for="zip_codes">Enter ZIP code(s), separated by commas:</label>
+        <textarea
+          id="zip_codes"
+          name="zip_codes"
+          rows="3"
+          placeholder="e.g. 75001, 75002, 75005"
+        >{{ raw_input or '' }}</textarea>
+
+        <button type="submit">Compare</button>
+      </form>
+
+      <div class="nav-buttons">
+        <button type="button"
+                onclick="window.location.href='{{ url_for('index') }}'">
+          Home
+        </button>
+      </div>
+
+    {% else %}
+      <div class="result">
+        <h2>Data: {{ current_src }}</h2>
+        <h3>ZIP {{ selected|join(', ') }}</h3>
+        {% if missing %}
+          <div class="error">No data for: {{ missing|join(', ') }}</div>
+        {% endif %}
+        <img src="data:image/png;base64,{{ plot_data }}" alt="Comparison graph">
+
+        <div class="nav-buttons">
+          <a href="{{ url_for('graph') }}">
+            <button type="button">Compare Again</button>
+          </a>
+          <button type="button"
+                  onclick="window.location.href='{{ url_for('index') }}'">
+            Home
+          </button>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</body>
+</html>

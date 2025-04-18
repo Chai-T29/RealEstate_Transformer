@@ -1,0 +1,20 @@
+# Numerical and data processing libraries:
+numpy==1.26.4
+pandas==2.2.2
+
+# Deep learning libraries:
+torch==2.5.1
+torchvision==0.20.1
+pytorch-lightning==2.0.2
+
+# Plotting:
+matplotlib==3.10.0
+
+# Web framework:
+Flask==2.2.3
+
+# Utilities:
+tqdm>=4.62
+requests==2.32.3
+scipy==1.13.1
+python-dateutil>=2.8.2

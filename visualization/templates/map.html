@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link rel="icon" 
+        type="image/png" 
+        href="{{ url_for('static', filename='images/favicon.png') }}">
+  <title>State Zip Codes Map</title>
+  <style>
+    /* Prevent any horizontal scrollbar */
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #dee8f5, #5563DE);
+      color: #fff;
+    }
+
+    /* Top bar with background image + overlay */
+    .top-bar {
+      position: relative;
+      width: 100%;
+      background: url("{{ url_for('static', filename='images/img2.jpg') }}") no-repeat center center;
+      background-size: cover;
+      padding: 40px 0;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+    .top-bar::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 0;
+    }
+    .top-bar h1 {
+      position: relative;
+      z-index: 1;
+      margin: 0;
+      text-align: center;
+      font-size: 1.8em;
+      font-weight: 400;
+      letter-spacing: 1px;
+      color: #fff;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+    }
+
+    /* Dropdown Styling */
+    #stateSelect {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1000;
+      padding: 8px 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #5563DE;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      outline: none;
+    }
+    #stateSelect:hover { background: #3e4bb5; }
+
+    /* Return Button Styling */
+    #returnButton {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 180px;
+      z-index: 1000;
+      padding: 8px 12px;
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      background: #5563DE;
+      color: white;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      outline: none;
+    }
+    #returnButton:hover { background: #3e4bb5; }
+
+    /* Responsive SVG container & hide any overflow */
+    #map {
+      display: block;
+      width: 100%;
+      max-width: 1400px;
+      height: auto;
+      margin: 0 auto 0px auto;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      overflow: hidden;
+    }
+
+    /* ZIP areas */
+    .zip {
+      fill: #fff;
+      stroke: #999;
+      stroke-width: 0.5px;
+      opacity: 0.85;
+      transition: fill 0.3s, stroke 0.3s, stroke-width 0.3s;
+    }
+    .zip:hover {
+      fill: #ff6f61;
+      stroke: #fff;
+      stroke-width: 1.5px;
+      opacity: 1;
+    }
+
+    /* State border */
+    .state-border {
+      fill: none;
+      stroke: #333;
+      stroke-width: 1.2px;
+      opacity: 0.7;
+    }
+
+    /* Map label (state name) */
+    .map-label {
+      font-size: 36px;
+      fill: #f7f7f7;
+      opacity: 0.4;
+      text-anchor: middle;
+      dominant-baseline: middle;
+      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top bar with background + mask -->
+  <div class="top-bar">
+    <h1>Est. Median Sale/Rental Price by Zip Code (December 2024)</h1>
+  </div>
+
+  <!-- Return to Home Button -->
+  <button id="returnButton" onclick="window.location.href='/'">
+    Home
+  </button>
+
+  <!-- State selector -->
+  <select id="stateSelect">
+    <option value="">Select a state</option>
+    <option value="al">Alabama</option>
+    <option value="ak">Alaska</option>
+    <option value="az">Arizona</option>
+    <option value="ar">Arkansas</option>
+    <option value="ca">California</option>
+    <option value="co">Colorado</option>
+    <option value="ct">Connecticut</option>
+    <option value="de">Delaware</option>
+    <option value="dc">District of Columbia</option>
+    <option value="fl">Florida</option>
+    <option value="ga">Georgia</option>
+    <option value="hi">Hawaii</option>
+    <option value="id">Idaho</option>
+    <option value="il">Illinois</option>
+    <option value="in">Indiana</option>
+    <option value="ia">Iowa</option>
+    <option value="ks">Kansas</option>
+    <option value="ky">Kentucky</option>
+    <option value="la">Louisiana</option>
+    <option value="me">Maine</option>
+    <option value="md">Maryland</option>
+    <option value="ma">Massachusetts</option>
+    <option value="mi">Michigan</option>
+    <option value="mn">Minnesota</option>
+    <option value="ms">Mississippi</option>
+    <option value="mo">Missouri</option>
+    <option value="mt">Montana</option>
+    <option value="ne">Nebraska</option>
+    <option value="nv">Nevada</option>
+    <option value="nh">New Hampshire</option>
+    <option value="nj">New Jersey</option>
+    <option value="nm">New Mexico</option>
+    <option value="ny">New York</option>
+    <option value="nc">North Carolina</option>
+    <option value="nd">North Dakota</option>
+    <option value="oh">Ohio</option>
+    <option value="ok">Oklahoma</option>
+    <option value="or">Oregon</option>
+    <option value="pa">Pennsylvania</option>
+    <option value="ri">Rhode Island</option>
+    <option value="sc">South Carolina</option>
+    <option value="sd">South Dakota</option>
+    <option value="tn">Tennessee</option>
+    <option value="tx">Texas</option>
+    <option value="ut">Utah</option>
+    <option value="vt">Vermont</option>
+    <option value="va">Virginia</option>
+    <option value="wa">Washington</option>
+    <option value="wv">West Virginia</option>
+    <option value="wi">Wisconsin</option>
+    <option value="wy">Wyoming</option>
+  </select>
+  
+  <!-- SVG for the map -->
+  <svg id="map" viewBox="0 0 1400 900" preserveAspectRatio="xMidYMid meet"></svg>
+
+  <!-- D3 library -->
+  <script src="https://d3js.org/d3.v3.min.js"></script>
+  <script>
+    // map of state codes → name & GeoJSON path
+    var states = {
+      "al": { name: "Alabama",                  file: "/static/data/al_alabama_zip_codes_geo.min.json" },
+      "ak": { name: "Alaska",                   file: "/static/data/ak_alaska_zip_codes_geo.min.json" },
+      "az": { name: "Arizona",                  file: "/static/data/az_arizona_zip_codes_geo.min.json" },
+      "ar": { name: "Arkansas",                 file: "/static/data/ar_arkansas_zip_codes_geo.min.json" },
+      "ca": { name: "California",               file: "/static/data/ca_california_zip_codes_geo.min.json" },
+      "co": { name: "Colorado",                 file: "/static/data/co_colorado_zip_codes_geo.min.json" },
+      "ct": { name: "Connecticut",              file: "/static/data/ct_connecticut_zip_codes_geo.min.json" },
+      "de": { name: "Delaware",                 file: "/static/data/de_delaware_zip_codes_geo.min.json" },
+      "dc": { name: "District of Columbia",     file: "/static/data/dc_district_of_columbia_zip_codes_geo.min.json" },
+      "fl": { name: "Florida",                  file: "/static/data/fl_florida_zip_codes_geo.min.json" },
+      "ga": { name: "Georgia",                  file: "/static/data/ga_georgia_zip_codes_geo.min.json" },
+      "hi": { name: "Hawaii",                   file: "/static/data/hi_hawaii_zip_codes_geo.min.json" },
+      "id": { name: "Idaho",                    file: "/static/data/id_idaho_zip_codes_geo.min.json" },
+      "il": { name: "Illinois",                 file: "/static/data/il_illinois_zip_codes_geo.min.json" },
+      "in": { name: "Indiana",                  file: "/static/data/in_indiana_zip_codes_geo.min.json" },
+      "ia": { name: "Iowa",                     file: "/static/data/ia_iowa_zip_codes_geo.min.json" },
+      "ks": { name: "Kansas",                   file: "/static/data/ks_kansas_zip_codes_geo.min.json" },
+      "ky": { name: "Kentucky",                 file: "/static/data/ky_kentucky_zip_codes_geo.min.json" },
+      "la": { name: "Louisiana",                file: "/static/data/la_louisiana_zip_codes_geo.min.json" },
+      "me": { name: "Maine",                    file: "/static/data/me_maine_zip_codes_geo.min.json" },
+      "md": { name: "Maryland",                 file: "/static/data/md_maryland_zip_codes_geo.min.json" },
+      "ma": { name: "Massachusetts",            file: "/static/data/ma_massachusetts_zip_codes_geo.min.json" },
+      "mi": { name: "Michigan",                 file: "/static/data/mi_michigan_zip_codes_geo.min.json" },
+      "mn": { name: "Minnesota",                file: "/static/data/mn_minnesota_zip_codes_geo.min.json" },
+      "ms": { name: "Mississippi",              file: "/static/data/ms_mississippi_zip_codes_geo.min.json" },
+      "mo": { name: "Missouri",                 file: "/static/data/mo_missouri_zip_codes_geo.min.json" },
+      "mt": { name: "Montana",                  file: "/static/data/mt_montana_zip_codes_geo.min.json" },
+      "ne": { name: "Nebraska",                 file: "/static/data/ne_nebraska_zip_codes_geo.min.json" },
+      "nv": { name: "Nevada",                   file: "/static/data/nv_nevada_zip_codes_geo.min.json" },
+      "nh": { name: "New Hampshire",            file: "/static/data/nh_new_hampshire_zip_codes_geo.min.json" },
+      "nj": { name: "New Jersey",               file: "/static/data/nj_new_jersey_zip_codes_geo.min.json" },
+      "nm": { name: "New Mexico",               file: "/static/data/nm_new_mexico_zip_codes_geo.min.json" },
+      "ny": { name: "New York",                 file: "/static/data/ny_new_york_zip_codes_geo.min.json" },
+      "nc": { name: "North Carolina",           file: "/static/data/nc_north_carolina_zip_codes_geo.min.json" },
+      "nd": { name: "North Dakota",             file: "/static/data/nd_north_dakota_zip_codes_geo.min.json" },
+      "oh": { name: "Ohio",                     file: "/static/data/oh_ohio_zip_codes_geo.min.json" },
+      "ok": { name: "Oklahoma",                 file: "/static/data/ok_oklahoma_zip_codes_geo.min.json" },
+      "or": { name: "Oregon",                   file: "/static/data/or_oregon_zip_codes_geo.min.json" },
+      "pa": { name: "Pennsylvania",             file: "/static/data/pa_pennsylvania_zip_codes_geo.min.json" },
+      "ri": { name: "Rhode Island",             file: "/static/data/ri_rhode_island_zip_codes_geo.min.json" },
+      "sc": { name: "South Carolina",           file: "/static/data/sc_south_carolina_zip_codes_geo.min.json" },
+      "sd": { name: "South Dakota",             file: "/static/data/sd_south_dakota_zip_codes_geo.min.json" },
+      "tn": { name: "Tennessee",                file: "/static/data/tn_tennessee_zip_codes_geo.min.json" },
+      "tx": { name: "Texas",                    file: "/static/data/tx_texas_zip_codes_geo.min.json" },
+      "ut": { name: "Utah",                     file: "/static/data/ut_utah_zip_codes_geo.min.json" },
+      "vt": { name: "Vermont",                  file: "/static/data/vt_vermont_zip_codes_geo.min.json" },
+      "va": { name: "Virginia",                 file: "/static/data/va_virginia_zip_codes_geo.min.json" },
+      "wa": { name: "Washington",               file: "/static/data/wa_washington_zip_codes_geo.min.json" },
+      "wv": { name: "West Virginia",            file: "/static/data/wv_west_virginia_zip_codes_geo.min.json" },
+      "wi": { name: "Wisconsin",                file: "/static/data/wi_wisconsin_zip_codes_geo.min.json" },
+      "wy": { name: "Wyoming",                  file: "/static/data/wy_wyoming_zip_codes_geo.min.json" }
+    };
+
+    var width = 1400,
+        height = 900;
+    var svg = d3.select("#map");
+
+    // when user picks a state
+    d3.select("#stateSelect").on("change", function() {
+      var key = this.value;
+      if (!states[key]) return;
+      loadState(states[key]);
+    });
+
+    function loadState(stateInfo) {
+      svg.selectAll("*").remove();
+
+      // 1) load rental data
+      d3.csv("/static/rental.csv", function(errR, rentalData) {
+        if (errR) return console.error(errR);
+        var rentalByZip = {};
+        rentalData.forEach(function(d) {
+          var zip = d["Zip code"].toString().padStart(5,"0");
+          rentalByZip[zip] = +d.rental;
+        });
+
+        // 2) load sale data
+        d3.csv("/static/median_sale_price.csv", function(errS, saleData) {
+          if (errS) return console.error(errS);
+          var saleByZip = {};
+          saleData.forEach(function(d) {
+            var zip = d["Zip code"].toString().padStart(5,"0");
+            saleByZip[zip] = +d.median_sale_price;
+          });
+
+          // 3) load GeoJSON
+          d3.json(stateInfo.file, function(errJ, geoData) {
+            if (errJ) return console.error(errJ);
+
+            // projection & path
+            var projection = d3.geo.mercator().scale(1).translate([0,0]);
+            var path = d3.geo.path().projection(projection);
+            var b = path.bounds(geoData),
+                s = 0.95/Math.max((b[1][0]-b[0][0])/width,(b[1][1]-b[0][1])/height),
+                t = [(width - s*(b[1][0]+b[0][0]))/2,(height - s*(b[1][1]+b[0][1]))/2];
+            projection.scale(s).translate(t);
+
+            // draw ZIPs
+            var zips = svg.append("g").attr("class","zip-group")
+              .selectAll("path")
+              .data(geoData.features)
+              .enter().append("path")
+                .attr("class","zip")
+                .attr("d", path)
+                .each(function(d) {
+                  var z = d.properties.ZCTA5CE10;
+                  d.properties.rental = rentalByZip[z];
+                  d.properties.sale   = saleByZip[z];
+                });
+
+            // tooltip
+            zips.append("title").text(function(d) {
+              var z = d.properties.ZCTA5CE10 || "N/A",
+                  r = d.properties.rental != null ? d.properties.rental.toFixed(2) : "N/A",
+                  m = d.properties.sale   != null ? d.properties.sale.toLocaleString() : "N/A";
+              return "Zip code: "     + z
+                   + "\nRental price: $" + r
+                   + "\nMedian sale price:   $" + m;
+            });
+
+            // state border
+            svg.append("g").attr("class","border-group")
+              .append("path")
+                .attr("class","state-border")
+                .attr("d", path(geoData));
+
+            // big label
+            svg.append("text")
+              .attr("class","map-label")
+              .attr("x", width/2).attr("y", height/2)
+              .text(stateInfo.name);
+          });
+        });
+      });
+    }
+  </script>
+</body>
+</html>
