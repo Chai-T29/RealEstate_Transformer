@@ -3,6 +3,8 @@
 🔗 **Project Google Drive**:  
 [Access the Drive Folder](https://drive.google.com/drive/folders/1wBVWORZl7w8UccK1tqoNAn0_LC3hptcO?usp=drive_link)
 
+<br>
+
 ---
 
 ## Description
@@ -12,8 +14,14 @@ Welcome to My Group's Housing & Rental Forecasting Tool (For GA Tech CSE 6242).
 This project delivers a comprehensive solution for predicting and visualizing real estate trends across U.S. ZIP codes. It integrates deep learning models and interactive dashboards to support both exploration and forecasting of housing and rental values.
 
 ### 🔧 Core Components
-1. **Neural Network Model** – Predicts current and future housing/rental values using a Transformer-based architecture.  
-2. **Interactive Visualization** – Dual dashboards for historical and forecasted data across ZIP codes.
+1. **Neural Network Model** – Predicts current and future housing/rental values using a Transformer-based architecture. Here's a high-level overview of the model's architecture:
+
+![Screenshot 2025-04-18 at 11 21 52 AM](https://github.com/user-attachments/assets/948b429e-22c8-416b-a388-dc93b4eab10e)
+
+2. **Interactive Visualization** – Dual dashboards for historical and forecasted data across ZIP codes, as shown below:
+
+![Uploading Screenshot 2025-04-18 at 11.23.28 AM.png…]()
+
 
 ### Key Features
 - Forecasts up to 12 months into the future  
@@ -22,7 +30,8 @@ This project delivers a comprehensive solution for predicting and visualizing re
 - Fully compatible with Google Colab and local Python (GPU recommended)
 
 Here's an example of how the model deals with sparsity:
-![results](https://github.com/user-attachments/assets/1cf11180-c19c-4abb-9c77-7323a46868be)
+
+![download](https://github.com/user-attachments/assets/8940e767-2827-47c1-abc3-ce8e686e8a9c)
 
 <br>
 
@@ -34,6 +43,8 @@ Here's an example of how the model deals with sparsity:
 2. Open `redfin_model_pipeline.ipynb` — the primary notebook for running the project.  
 3. Manually download the rental dataset and place it into the `data/` directory (instructions in the notebook).  
 4. All other steps are automated via the notebook.
+
+<br>
 
 ---
 
@@ -101,9 +112,3 @@ Visualize ZIP-level trends and predictions:
 A pre-built Tableau dashboard enables:
 - ZIP-level mortgage vs. rental cost comparison  
 - Adjustable interest rates for mortgage calculations
-
-Access it via the link titled **"Tableau Visualization"** in the notebook.
-
----
-
-💡 *For questions, contributions, or issues — feel free to open an issue or submit a pull request!*
