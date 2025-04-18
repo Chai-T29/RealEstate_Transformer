@@ -20,7 +20,7 @@ This project delivers a comprehensive solution for predicting and visualizing re
 
 2. **Interactive Visualization** – Dual dashboards for historical and forecasted data across ZIP codes, as shown below:
 
-![Uploading Screenshot 2025-04-18 at 11.23.28 AM.png…]()
+![Screenshot 2025-04-18 at 11 24 07 AM](https://github.com/user-attachments/assets/0cd442c0-a9b5-454f-a4c3-cd615dc656d6)
 
 
 ### Key Features
